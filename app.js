@@ -20,6 +20,7 @@ let keys = {
 let player;
 
 function startGame() {
+    container.innerHTML ='';
     btnStart.style.display='none';  
     var div = document.createElement('div');
     div.setAttribute('class','playerCar');
@@ -30,10 +31,10 @@ function startGame() {
     animationGame = requestAnimationFrame(playGame);
     player = {
         ele: div,
-        speed: 3,
+        speed: 0,
         lives: 3,
         score: 0,
-        carsToPass: 10,
+        carsToPass: 2,
         roadWidth: 250,
         gameEndCounter: 0
     }
@@ -76,6 +77,7 @@ function startBoard() {
         let div = document.createElement('div');
         div.setAttribute('class','road');
         div.style.top = (x*50) + 'px';
+        div.setAttribute('id', 'x' + x);
         div.style.width = player.roadWidth + 'px';
         container.appendChild(div); 
     }
@@ -99,8 +101,9 @@ function moveRoad() {
     let tempRoad = document.querySelectorAll('.road');
     let previousRoad = tempRoad[0].offsetLeft;
     let previousWidth = tempRoad[0].offsetWidth;
+    const pSpeed = Math.floor(player.speed);
     for(let x = 0; x < tempRoad.length; x++) {
-        let num = tempRoad[x].offsetTop + player.speed;
+        let num = tempRoad[x].offsetTop + pSpeed;
         if(num > 600){
             num = num - 650;
             let mover = previousRoad + (Math.floor(Math.random() * 6) - 3);
@@ -111,8 +114,8 @@ function moveRoad() {
             if(mover > 600) mover = 600;
             tempRoad[x].style.left = mover + 'px';
             tempRoad[x].style.width = roadWidth + 'px';
-            previousRoad = tempRoad[0].offsetLeft;
-            previousWidth = tempRoad[0].width;
+            previousRoad = tempRoad[x].offsetLeft;
+            previousWidth = tempRoad[x].width;
         }
         tempRoad[x].style.top = num + 'px';
     }
@@ -131,28 +134,33 @@ function isCollide(a,b){
 }
 
 function moveBadGuys() {
-    if(player.gameEndCounter > 0) {
-        player.gameEndCounter--;
-        player.y = (player.y > 60) ? player.y - 30 : 60;
-        if(player.gameEndCounter == 0) {
-            gamePlay = false;
-            btnStart.style.display = 'block';
-        }
-    }
-
     let tempBaddy = document.querySelectorAll('.baddy');
     for(let i = 0; i < tempBaddy.length; i++) {
+        for(let ii = 0; ii < tempBaddy.length; ii++) {
+            if(i != ii && isCollide(tempBaddy[i],tempBaddy[ii])) {
+                tempBaddy[ii].style.top = (tempBaddy[ii].offsetTop + 20) + 'px';
+                tempBaddy[i].style.top = (tempBaddy[i].offsetTop - 20) + 'px';
+                tempBaddy[ii].style.left = (tempBaddy[ii].offsetLeft - 20) + 'px';
+                tempBaddy[i].style.left = (tempBaddy[i].offsetLeft + 20) + 'px';
+            }
+        }
         let y = tempBaddy[i].offsetTop + player.speed - tempBaddy[i].speed;
-        if(y > 2000 || y < -2000) {
-            //reset car
+        if(y > 1000 || y < -2000) {
+            if(y > 1000) {
+                player.score++;
+                if(player.score > player.carsToPass) {
+                    gameOverPlay();
+                }
+            }
             makeBad(tempBaddy[i]);
-        } else {
+        }
+            else {
             tempBaddy[i].style.top = y + 'px';
             let hitCar = isCollide(tempBaddy[i],player.ele);
             //console.log(hitCar);
             if(hitCar){
                 player.speed = 0;
-                player.lives --;
+                player.lives--;
                 if(player.lives < 1) {
                     player.gameEndCounter = 1;   
                 }
@@ -162,9 +170,22 @@ function moveBadGuys() {
     }
 }
 
+function gameOverPlay() {
+    let div = document.createElement('div');
+    div.setAttribute('class','road');
+    div.style.top = '200px';
+    div.style.width = '250px';
+    div.style.backgroundColor = 'red';
+    div.innerHTML = 'FINISH';
+    div.style.fontSize = '3em';
+    container.appendChild(div);
+    player.gameEndCounter = 12;
+    player.speed = 0;
+
+}
 
 function playGame() {
-    if(gamePlay){
+    if(gamePlay){ 
     updateDash();
     //Movement
     let roadPara = moveRoad();
@@ -194,4 +215,13 @@ function playGame() {
 
 }
 animationGame = requestAnimationFrame(playGame);
+if (player.gameEndCounter > 0) {
+    player.gameEndCounter--;
+    player.y = (player.y > 60) ? player.y - 30 : 60;
+    if (player.gameEndCounter == 0) {
+        gamePlay = false;
+        cancelAnimationFrame(animationGame);
+        btnStart.style.display = 'block';
+        }
+    }
 }

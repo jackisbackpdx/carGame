@@ -5,6 +5,7 @@
     left: 5%;
     background-color: green;
     overflow: hidden;
+    margin-left: 20%;
 }
 .dashboard {
     background-color: black;
@@ -15,8 +16,8 @@
 }
 .btnStart {
     position: absolute;
-    top: 480px;
-    left: 20%;
+    top: 550px;
+    left: 700px;
     width: 200px;
     border: 1px solid black;
     background-color: red;
@@ -26,6 +27,9 @@
     text-align: center;
     border-radius: 25px;
     padding: 5px;
+}
+.btnStart:hover {
+    cursor: pointer;
 }
 .road {
     position: absolute;
@@ -39,7 +43,7 @@
     border-radius: 2px;
 }
 .road:before {
-    content: 'LV';
+    content: '||';
     vertical-align: top;
     color: white;
     width: 1px;
@@ -47,6 +51,7 @@
     line-height: 30px;
     left: 50%;
     position: absolute;
+    font-size: 1em
 }
 .baddy {
     position: absolute;
