@@ -29,7 +29,7 @@
 }
 .road {
     position: absolute;
-    height: 50px;
+    height: 55px;
     width: 250px;
     top: 0;
     left: 200px;
@@ -47,6 +47,18 @@
     line-height: 30px;
     left: 50%;
     position: absolute;
+}
+.baddy {
+    position: absolute;
+    height: 80px;
+    width: 40px;
+    bottom: 0px;
+    left: 0px;
+    border-radius: 5px;
+    background-image: url(./images/car2.png);
+    background-size: cover;
+    z-index: 99;
+    text-align: center;
 }
 .playerCar {
     position: absolute;
